@@ -1,0 +1,26 @@
+extends layout
+
+block content
+  .row
+    .col-md-6.col-md-offset-3
+      h2= title
+      br
+      form#rmaForm.form-horizontal
+        .form-group
+          label.col-sm-2.control-label(for='inputProduct') Product
+          .col-sm-10
+            input#inputProduct.form-control(placeholder='Enter Product Name', data-bind='value: product')
+        .form-group
+          label.col-sm-2.control-label(for='inputSerial') Serial #
+          .col-sm-10
+            input#inputSerial.form-control(placeholder='Enter Serial Number', data-bind='value: serialNumber')
+        .form-group
+          .col-sm-offset-2.col-sm-10
+            button.btn.btn-success(type='submit')
+                i.fa.fa-plus
+                |   Add RMA
+              
+  .row
+    .col-md-6.col-md-offset-3
+      .h3 Data
+      #rmaGrid.backgrid-container

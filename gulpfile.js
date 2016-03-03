@@ -4,6 +4,7 @@ var gulp = require('gulp');
 var browserSync = require('browser-sync');
 var nodemon = require('gulp-nodemon');
 var sass = require('gulp-sass');
+var jasmineNode = require('gulp-jasmine-node');
 
 // Entry
 gulp.task('default', ['browser-sync','sass:watch'], function () {
@@ -45,4 +46,11 @@ gulp.task('sass', function () {
 // Sass Watch 
 gulp.task('sass:watch', function () {
   gulp.watch('./src/stylesheets/**/*.scss', ['sass']);
+});
+
+// Tests
+gulp.task('test', function () {
+    return gulp.src(['./src/specs/**/*Spec.js']).pipe(jasmineNode({
+        timeout: 10000
+    }));
 });

@@ -24,4 +24,11 @@ describe("RmaHelper", function(){
        
         expect(nextRmaNumber).toEqual("RMA-" + currentYear + "-001");
     });
+    
+    it("should generate an rma number if one does not already exist", function(){
+        var nextRmaNumber = RmaHelper.getNextRmaNumber();
+        var currentYear = new Date().getFullYear().toString();
+       
+        expect(nextRmaNumber).toEqual("RMA-" + currentYear + "-001");
+    });
 });

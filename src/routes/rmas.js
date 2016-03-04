@@ -39,9 +39,14 @@ router.route('/')
                 res.status(500).send(err);
                 return;
             }
-            var next = RmaHelper.getNextRmaNumber(data.rmaNumber);
+            
             var rma = new Rma();
-            rma.rmaNumber = next;
+            if(data) {
+                rma.rmaNumber = RmaHelper.getNextRmaNumber(data.rmaNumber);  
+            }
+            else {
+                rma.rmaNumber = RmaHelper.getNextRmaNumber(); 
+            }                 
             rma.product = req.body.product;
             rma.serialNumber = req.body.serialNumber;
             rma.save(function(err, data) {

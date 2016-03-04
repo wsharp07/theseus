@@ -13,7 +13,7 @@ var RmaHelper = (function(){
             this.suffix = null;     
         }
        
-        RmaNumber.prototype.create = function(){
+        RmaNumber.prototype.build = function(){
             var arr = [];
             arr.push(this.prefix);
             arr.push(this.year);
@@ -33,7 +33,17 @@ var RmaHelper = (function(){
         return RmaNumber;
     }());
     
+    function createNewRmaNumber() {
+        var newRma = new RmaNumber();
+        var currentYear = new Date().getFullYear().toString();
+        newRma.year = currentYear;
+        newRma.suffix = "001";
+        return newRma.build();
+    }
+    
     function getNextRmaNumber(lastRmaNumber){
+        if(!lastRmaNumber) return createNewRmaNumber();
+        
         var prevRma = new RmaNumber().parse(lastRmaNumber);
         var newRma = new RmaNumber();
         var currentYear = new Date().getFullYear().toString();
@@ -42,7 +52,7 @@ var RmaHelper = (function(){
         newRma.year = currentYear;
         newRma.suffix = newSuffix;
         
-        return newRma.create();
+        return newRma.build();
     }
     
     function getRmaSuffix(prevSuffix, prevYear){

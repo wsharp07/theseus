@@ -31,7 +31,8 @@ app.use('/rmas', rmas);
 // Start App
 app.listen(3000, function () {
     console.log('[Theseus] Listening on port 3000');
-    mongoose.connect('mongodb://192.168.99.100:32768/theseusdb');
+    mongoose.connect('mongodb://10.55.247.207:27017/theseusdb');
+    //mongoose.connect('mongodb://192.168.99.100:32768/theseusdb');
     
     var db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error:'));

@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: theseus
+  labels:
+    name: theseus
+spec:
+  replicas: 1
+  selector:
+    name: theseus
+  template:
+    metadata:
+      labels:
+        name: theseus
+    spec:
+      containers:
+      - name: theseus
+        image: "gcr.io/theseus-1239/theseus:latest"
+        ports:
+        - name: "http-server"
+          containerPort: 3000

@@ -16,6 +16,9 @@ spec:
       containers:
       - name: theseus
         image: "gcr.io/theseus-1239/theseus:latest"
+        env:
+        - name: NODE_ENV
+          value: production
         ports:
         - name: "http-server"
           containerPort: 3000

@@ -3,6 +3,7 @@ var app = express();
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
+var config = require('./config');
 
 // Routes
 var routes = require('./src/routes/index');
@@ -28,11 +29,13 @@ app.use('/scripts', express.static(__dirname + '/node_modules/knockout/build/out
 app.use('/', routes);
 app.use('/rmas', rmas);
 
+config.init();
+
 // Start App
-app.listen(3000, function () {
-    console.log('[Theseus] Listening on port 3000');
-    mongoose.connect('mongodb://10.55.247.207:27017/theseusdb');
-    //mongoose.connect('mongodb://192.168.99.100:32768/theseusdb');
+app.listen(config.web.port, function () {
+    console.log('[Theseus] Listening on port ' + config.web.port);
+    console.log(config.database.getConnectionString());
+    mongoose.connect(config.database.getConnectionString());
     
     var db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error:'));

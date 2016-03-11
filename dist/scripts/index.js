@@ -1,79 +1,138 @@
-var indexPage = (function(){
+var indexPage = (function() {
 
-  var RmaModel = function(){
-    var self = this;
-    self.rmaNumber = ko.observable();
-    self.product = ko.observable();
-    self.serialNumber = ko.observable();
-  };
+    var RmaModel = function() {
+        var self = this;
+        self.rmaNumber = ko.observable();
+        self.product = ko.observable();
+        self.serialNumber = ko.observable();
+        self.comments = ko.observable();
+    };
 
-  var _rmaModel = new RmaModel();
-  $(document).ready(function(){
-    ko.applyBindings(_rmaModel);
-  });
-    
-  var columns =  [
-          {
-              name: "rmaNumber",
-              label: "RMA #",
-              cell: "string",
-              editable: false
-          },
-          {
-              name: "product",
-              label: "Product",
-              cell: "string"
-          },
-          {
-              name: "serialNumber",
-              label: "Serial #",
-              cell: "string"
-          },
-          {
-              name: "createdAt",
-              label: "Created At",
-              cell: "date",
-              editable: false
-          }
-   ];
-   
-   var dataSource = new Backbone.Collection;
-   dataSource.url = "/rmas";
-   
-   var grid = new Backgrid.Grid({
-       columns: columns,
-       collection: dataSource
-   });
-   
-   var $rmaGrid = $("#rmaGrid");
-   $rmaGrid.append(grid.render().el)
-   
-   dataSource.fetch({reset: true});
-   
-     $("#rmaForm").submit(function(e){
+    RmaModel.prototype.getJson = function() {
+        return JSON.stringify({
+            rmaNumber: this.rmaNumber(),
+            product: this.product(),
+            serialNumber: this.serialNumber(),
+            comments: this.comments()
+        });
+    }
+
+    var _rmaModel = new RmaModel();
+    // Document Ready
+    $(document).ready(function() {
+        ko.applyBindings(_rmaModel);
+
+        $('#btnClear').on('click', function(e) {
+            e.preventDefault();
+
+            $("#rmaForm").clearForm();
+        })
+    });
+
+    var dataSource = getDataSource();
+    var columns = getColumns();
+    var grid = buildGrid(columns, dataSource);
+    var paginator = buildPaginator(dataSource);
+
+    renderGrid(grid, paginator);
+    dataSource.fetch({ reset: true });
+
+    $("#rmaForm").submit(function(e) {
         e.preventDefault();
-        
+
         $.ajax({
             method: "POST",
             url: "/rmas",
             contentType: 'application/json; charset=UTF-8',
-            data: JSON.stringify({
-                rmaNumber: _rmaModel.rmaNumber(),
-                product: _rmaModel.product(),
-                serialNumber: _rmaModel.serialNumber()
+            data: _rmaModel.getJson()
+        })
+            .done(function(data) {
+                $("#rmaForm").clearForm();
+                dataSource.fetch({ reset: true});
             })
-        })
-        .done(function(data){
-            console.log(data.rmaNumber + " added successfully");
-            dataSource.add(data);
-        })
-        .error(function(jqXHR,textStatus,err){
-            console.log(err);
+            .error(function(jqXHR, textStatus, err) {
+                console.log(err);
+            });
+    });
+
+    function getDataSource() {
+        var RmasDataSource = Backbone.PageableCollection.extend({
+            url: "/rmas",
+            // Initial pagination states
+            state: {
+                pageSize: 10,
+                sortKey: "rmaNumber",
+                order: -1
+            },
+            parseState: function(res, queryParams, state, options) {
+                return { totalRecords: res.total_count };
+            },
+            parseRecords: function(res, options) {
+                return res.data;
+            }
         });
-   });
-   
-   
-   return {
-       dataSource: dataSource
-   }
-}());
+
+        return new RmasDataSource();
+    }
+
+    function getColumns() {
+        return [
+            {
+                name: "rmaNumber",
+                label: "RMA #",
+                cell: "string",
+                editable: false
+            },
+            {
+                name: "product",
+                label: "Product",
+                cell: "string",
+                editable: false
+            },
+            {
+                name: "serialNumber",
+                label: "Serial #",
+                cell: "string",
+                editable: false
+            },
+            {
+                name: "comments",
+                label: "Comments",
+                cell: "string",
+                editable: false
+            },
+            {
+                name: "createdAt",
+                label: "Created At",
+                cell: "date",
+                editable: false
+            }
+        ];
+    }
+
+    function buildGrid(columns, dataSource) {
+        return new Backgrid.Grid({
+            columns: columns,
+            collection: dataSource
+        });
+    }
+
+    function buildPaginator(dataSource) {
+        return new Backgrid.Extension.Paginator({
+            windowSize: 10, // Default is 10
+            slideScale: 0.25, // Default is 0.5
+            goBackFirstOnSort: true, // Default is true
+            collection: dataSource
+        });
+    }
+    
+    function renderGrid(grid, paginator) {
+        var $rmaGrid = $("#rmaGrid");
+        $rmaGrid.append(grid.render().el)
+        $rmaGrid.append(paginator.render().el);
+    }
+
+    return {
+        dataSource: dataSource
+    }
+} ());

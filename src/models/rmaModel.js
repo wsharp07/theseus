@@ -5,7 +5,7 @@ var RmaSchema = new Schema({
   rmaNumber:  String,
   serialNumber: String,
   product: String,
-  comments: [{ body: String, date: Date }],
+  comments: String,
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });

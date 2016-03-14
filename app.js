@@ -6,7 +6,7 @@ var config = require('./config');
 var logger = require('./logger');
 
 // Logs
-app.use(require('morgan')('combined',{'stream': logger.stream}));
+app.use(require('morgan')('combined', {stream: logger.stream}));
 
 // Routes
 var routes = require('./src/routes/index');

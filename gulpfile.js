@@ -5,9 +5,10 @@ var browserSync = require('browser-sync');
 var nodemon = require('gulp-nodemon');
 var sass = require('gulp-sass');
 var jasmineNode = require('gulp-jasmine-node');
+var babel = require("gulp-babel");
 
 // Entry
-gulp.task('default', ['browser-sync','sass:watch'], function () {
+gulp.task('default', ['browser-sync','sass:watch', 'babel:watch'], function () {
 });
 
 // Browser Sync
@@ -34,6 +35,18 @@ gulp.task('nodemon', function (cb) {
 			started = true; 
 		} 
 	});
+});
+
+// Babel Compile
+gulp.task('babel', function(){
+	return gulp.src("./src/scripts/**/*.js")
+		.pipe(babel())
+		.pipe(gulp.dest('./dist/scripts'));
+});
+
+// Babel Watch
+gulp.task('babel:watch', function () {
+  gulp.watch('./src/scripts/**/*.js', ['babel']);
 });
 
 // Sass Compile

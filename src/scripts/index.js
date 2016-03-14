@@ -1,8 +1,6 @@
-'use strict';
+var indexPage = (function() {
 
-var indexPage = function () {
-
-    var RmaModel = function RmaModel() {
+    var RmaModel = function() {
         var self = this;
         self.rmaNumber = ko.observable();
         self.product = ko.observable();
@@ -10,25 +8,25 @@ var indexPage = function () {
         self.comments = ko.observable();
     };
 
-    RmaModel.prototype.getJson = function () {
+    RmaModel.prototype.getJson = function() {
         return JSON.stringify({
             rmaNumber: this.rmaNumber(),
             product: this.product(),
             serialNumber: this.serialNumber(),
             comments: this.comments()
         });
-    };
+    }
 
     var _rmaModel = new RmaModel();
     // Document Ready
-    $(document).ready(function () {
+    $(document).ready(function() {
         ko.applyBindings(_rmaModel);
 
-        $('#btnClear').on('click', function (e) {
+        $('#btnClear').on('click', function(e) {
             e.preventDefault();
 
             $("#rmaForm").clearForm();
-        });
+        })
     });
 
     var dataSource = getDataSource();
@@ -39,7 +37,7 @@ var indexPage = function () {
     renderGrid(grid, paginator);
     dataSource.fetch({ reset: true });
 
-    $("#rmaForm").submit(function (e) {
+    $("#rmaForm").submit(function(e) {
         e.preventDefault();
 
         $.ajax({
@@ -47,12 +45,14 @@ var indexPage = function () {
             url: "/rmas",
             contentType: 'application/json; charset=UTF-8',
             data: _rmaModel.getJson()
-        }).done(function (data) {
-            $("#rmaForm").clearForm();
-            dataSource.fetch({ reset: true });
-        }).error(function (jqXHR, textStatus, err) {
-            console.log(err);
-        });
+        })
+            .done(function(data) {
+                $("#rmaForm").clearForm();
+                dataSource.fetch({ reset: true});
+            })
+            .error(function(jqXHR, textStatus, err) {
+                console.log(err);
+            });
     });
 
     function getDataSource() {
@@ -64,10 +64,10 @@ var indexPage = function () {
                 sortKey: "rmaNumber",
                 order: -1
             },
-            parseState: function parseState(res, queryParams, state, options) {
+            parseState: function(res, queryParams, state, options) {
                 return { totalRecords: res.total_count };
             },
-            parseRecords: function parseRecords(res, options) {
+            parseRecords: function(res, options) {
                 return res.data;
             }
         });
@@ -76,32 +76,38 @@ var indexPage = function () {
     }
 
     function getColumns() {
-        return [{
-            name: "rmaNumber",
-            label: "RMA #",
-            cell: "string",
-            editable: false
-        }, {
-            name: "product",
-            label: "Product",
-            cell: "string",
-            editable: false
-        }, {
-            name: "serialNumber",
-            label: "Serial #",
-            cell: "string",
-            editable: false
-        }, {
-            name: "comments",
-            label: "Comments",
-            cell: "string",
-            editable: false
-        }, {
-            name: "createdAt",
-            label: "Created At",
-            cell: "date",
-            editable: false
-        }];
+        return [
+            {
+                name: "rmaNumber",
+                label: "RMA #",
+                cell: "string",
+                editable: false
+            },
+            {
+                name: "product",
+                label: "Product",
+                cell: "string",
+                editable: false
+            },
+            {
+                name: "serialNumber",
+                label: "Serial #",
+                cell: "string",
+                editable: false
+            },
+            {
+                name: "comments",
+                label: "Comments",
+                cell: "string",
+                editable: false
+            },
+            {
+                name: "createdAt",
+                label: "Created At",
+                cell: "date",
+                editable: false
+            }
+        ];
     }
 
     function buildGrid(columns, dataSource) {
@@ -119,14 +125,14 @@ var indexPage = function () {
             collection: dataSource
         });
     }
-
+    
     function renderGrid(grid, paginator) {
         var $rmaGrid = $("#rmaGrid");
-        $rmaGrid.append(grid.render().el);
+        $rmaGrid.append(grid.render().el)
         $rmaGrid.append(paginator.render().el);
     }
 
     return {
         dataSource: dataSource
-    };
-}();
+    }
+} ());

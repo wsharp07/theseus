@@ -6,6 +6,11 @@ var RmaSchema = new Schema({
   serialNumber: String,
   product: String,
   comments: String,
+  status: {
+  	type: String,
+  	enum: ['Open', 'Closed'],
+  	default: 'Open'
+  },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });

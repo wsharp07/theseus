@@ -6,11 +6,12 @@ var config = require('./config');
 var logger = require('./logger');
 
 // Logs
-app.use(require('morgan')('combined',{'stream': logger.stream}));
+app.use(require('morgan')('combined', {stream: logger.stream}));
 
 // Routes
 var routes = require('./src/routes/index');
 var rmas = require('./src/routes/rmas');
+var customers = require('./src/routes/customers');
 
 app.set('view engine', 'jade');
 app.set('views', './src/views');
@@ -21,8 +22,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/stylesheets', express.static(__dirname + '/node_modules/bootstrap/dist/css/'));
 app.use('/stylesheets', express.static(__dirname + '/node_modules/backgrid/lib/'));
 app.use('/stylesheets', express.static(__dirname + '/node_modules/backgrid-paginator/'));
+app.use('/stylesheets', express.static(__dirname + '/lib/kendo/css/'));
 app.use('/scripts', express.static(__dirname + '/node_modules/bootstrap/dist/js/'));
 app.use('/scripts', express.static(__dirname + '/node_modules/jquery/dist/'));
+app.use('/scripts', express.static(__dirname + '/lib/kendo/js/'));
 app.use('/scripts', express.static(__dirname + '/node_modules/backgrid/lib/'));
 app.use('/scripts', express.static(__dirname + '/node_modules/backbone.paginator/lib/'));
 app.use('/scripts', express.static(__dirname + '/node_modules/backgrid-paginator/'));
@@ -33,6 +36,7 @@ app.use('/scripts', express.static(__dirname + '/node_modules/knockout/build/out
 // Routes
 app.use('/', routes);
 app.use('/rmas', rmas);
+app.use('/customers', customers)
 
 config.init();
 
